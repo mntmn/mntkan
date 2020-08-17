@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>mntkan</title>
+    <script src="/js/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
+    <script src="/js/mntkan.js"></script>
+    <link rel="stylesheet" href="/css/style.css"></link>
+  </head>
+  <body onload="boot()">
+    {% raw %}
+    <div id="app">
+      <table class="board">
+        <tr>
+          <th v-for="list in lists" @click="list.collapsed=!list.collapsed">
+            <a>{{list.title}} ({{list.cards.length}})</a>
+          </th>
+        </tr>
+        <tr>
+          <td v-for="list in lists">
+            <ul>
+              <draggable v-model="list.cards" v-bind:id="list.id" group="cards" @end="handleCardDrop" class="drag-container">
+                <li v-if="!list.collapsed"
+                    v-for="card in list.cards"
+                    :key="card.id"
+                    v-bind:id="card.id"
+                    @click="activeCard=card">{{card.title}}</li>
+              </draggable>
+            </ul>
+          </td>
+        </tr>
+      </table>
+
+      <div>
+        <h3>New Card</h3>
+        <form @submit="insertCardSubmit">
+          <input type="text" name="list_id" v-model="newCard.list_id"></input><br>
+          <input type="text" name="title" placeholder="Title" v-model="newCard.title"></input><br>
+          <textarea name="body"
+                    v-model="newCard.body"></textarea>
+          <input type="submit">
+        </form>
+      </div>
+      
+      <div>
+        <h3>View/Edit Card</h3>
+        <form @submit="updateCardSubmit">
+          <input type="hidden" name="id" v-model="activeCard.id"></input>
+          <input type="text" name="list_id" v-model="activeCard.list_id"></input><br>
+          <input type="text" name="title" placeholder="Title" v-model="activeCard.title"></input><br>
+          <textarea name="body" v-model="activeCard.body"></textarea>
+          <input type="submit">
+        </form>
+      </div>
+    </div>
+    {% endraw %}
+  </body>
+</html>
